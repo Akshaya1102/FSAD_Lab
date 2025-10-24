@@ -1,0 +1,25 @@
+.products-page {
+    margin: 20px;
+  }
+  
+  .product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 20px;
+  }
+  
+  .product-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .product-item h3 {
+    margin: 0;
+  }
+  
+  .product-item p {
+    margin: 5px 0;
+  }
+  

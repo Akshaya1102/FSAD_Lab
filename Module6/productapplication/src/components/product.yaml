@@ -1,0 +1,59 @@
+openapi: 3.0.0
+info:
+  title: Product Inventory API
+  version: 1.0.0
+servers:
+  - url: http://api.store.com/v1
+    description: Main production server
+paths:
+  /products:
+    get:
+      summary: Get the list of products
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/definitions/Product'
+  /products/{productId}:
+    get:
+      summary: Get details of a product
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+          required: true
+          description: ID of the product to retrieve
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Product'
+definitions:
+  Product:
+    type: object
+    properties:
+      id:
+        type: string
+        description: Unique identifier of the product
+      name:
+        type: string
+        description: Name of the product
+      price:
+        type: number
+        format: float
+        description: Price of the product
+      inStock:
+        type: boolean
+        description: Availability of the product (in stock or out of stock)
+    required:
+      - id
+      - name
+      - price
+      - inStock
