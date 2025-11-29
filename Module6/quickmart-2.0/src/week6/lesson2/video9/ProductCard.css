@@ -1,0 +1,23 @@
+.ProductCard {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  width: 180px;
+  text-align: center;
+}
+
+.ProductCard img {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.ProductCard h2 {
+  font-size: 1.1rem;
+  margin: 10px 0 5px;
+}
+
+.ProductCard p {
+  margin: 0;
+}

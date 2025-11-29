@@ -1,0 +1,1 @@
+npx json-server public/assets/products.json

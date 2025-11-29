@@ -1,0 +1,11 @@
+{
+  "products":[
+  { "id": 1, "name": "Fresh Apple", "price": 120, "image": "assets/images/apple.jpg","category":"fruits" },
+  { "id": 2, "name": "Banana", "price": 40, "image": "assets/images/banana.jpg","category":"fruits" },
+  { "id": 3, "name": "Milk", "price": 50, "image": "assets/images/milk.jpg","category":"dairy" },
+  { "id": 4, "name": "Bread", "price": 35, "image": "assets/images/bread.jpg","category":"bakery" },
+  { "id": 5, "name": "Tomatoes", "price": 30, "image": "assets/images/tomato.jpg","category":"vegetables" },
+  { "id": 6, "name": "Yogurt", "price": 30, "image": "assets/images/yogurt.jpg","category":"dairy" },
+  { "id": 7, "name": "Spinach", "price": 25, "image": "assets/images/spinach.jpg","category":"vegetables" }
+]
+}

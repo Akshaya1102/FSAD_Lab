@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`renders correctly and matches snapshot 1`] = `
+<div>
+  <div
+    class="ProductCard"
+  >
+    <img
+      alt="Sample Product"
+      src="assets/images/default-image-icon.jpg"
+    />
+    <h2>
+      Sample Product
+    </h2>
+    <p>
+      ₹
+    </p>
+    <button
+      class="AddToCart"
+    >
+      Add to Cart
+    </button>
+  </div>
+</div>
+`;

@@ -1,0 +1,23 @@
+import './Header.css';
+
+function Header({cartCount}){
+  return (
+    <header>
+      <h1>QuickMart</h1>
+      <nav>
+        <ul>
+          <li><a href="#">Fruits</a></li>
+          <li><a href="#">Vegetables</a></li>
+          <li><a href="#">Dairy</a></li>
+          <li><a href="#">Bakery</a></li>
+        </ul>
+        <div className="cart">
+          <img id="cart-icon" src="../assets/images/cart-icon.jpg" alt="" />
+          <span id="cart-count">{cartCount}</span>
+        </div>
+      </nav>
+    </header>
+  );
+};
+
+export default Header;
