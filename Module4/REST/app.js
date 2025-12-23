@@ -8,6 +8,7 @@ const orderRoutes = require("./api/routes/orders");
 const swaggerUi = require('swagger-ui-express');
 const yaml = require('yamljs');
 const dbConfig = require('./db.config.js');
+const authRoutes = require("./api/routes/auth");
 
  //Connecting to the database
  mongoose.connect(dbConfig.url).then(() => {
@@ -22,6 +23,7 @@ const dbConfig = require('./db.config.js');
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
 
 
 //CORS headers
@@ -39,7 +41,8 @@ app.use((req, res, next) => {
   }
    next();   
 });
-
+//authentication 
+app.use("/auth", authRoutes);
 // Routes which should handle requests
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
