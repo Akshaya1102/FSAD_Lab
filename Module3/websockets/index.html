@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Bidirectional Communication Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .status {
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            color: #444;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+
+        .message {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .message-welcome {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .message-chat {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .message-notification {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+
+        .message-pong {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .message-echo {
+            background-color: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+        }
+
+        .message-server {
+            background-color: #e0e0e0;
+            border-left: 4px solid #757575;
+        }
+
+        .message-error {
+            background-color: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .timestamp {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .info-box {
+            background-color: #e7f3ff;
+            border: 1px solid #b8daff;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            color: #004085;
+        }
+
+        .info-box p {
+            margin-bottom: 5px;
+            color: #004085;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Bidirectional Communication Demo</h1>
+
+    <div id="status" class="status disconnected">Disconnected</div>
+
+    <div class="container">
+        <div class="panel">
+            <h2>Connection</h2>
+            <button id="connectBtn" class="btn-success" onclick="connect()">Connect</button>
+            <button id="disconnectBtn" class="btn-danger" onclick="disconnect()" disabled>Disconnect</button>
+        </div>
+
+        <div class="panel">
+            <h2>Ping/Pong Test</h2>
+            <p>Test server responsiveness:</p>
+            <button class="btn-secondary" onclick="sendPing()">Send Ping</button>
+        </div>
+
+        <div class="panel">
+            <h2>Chat Message</h2>
+            <p>Broadcast to all connected clients:</p>
+            <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKeypress(event)">
+            <button class="btn-primary" onclick="sendChat()">Send Chat</button>
+        </div>
+
+        <div class="panel">
+            <h2>Echo Test</h2>
+            <p>Server reverses your message:</p>
+            <input type="text" id="echoInput" placeholder="Type text to echo..." onkeypress="handleEchoKeypress(event)">
+            <button class="btn-primary" onclick="sendEcho()">Send Echo</button>
+        </div>
+
+        <div class="panel full-width">
+            <h2>Messages</h2>
+            <button class="btn-secondary" onclick="clearMessages()">Clear Messages</button>
+            <div id="messages"></div>
+        </div>
+
+        <div class="panel full-width">
+            <div class="info-box">
+                <h3>How This Demo Works</h3>
+                <p><strong>Bidirectional Communication:</strong> Both client and server can send messages at any time.</p>
+                <p><strong>Chat:</strong> Messages are broadcast to ALL connected clients (open multiple browser tabs to test).</p>
+                <p><strong>Ping/Pong:</strong> Client sends ping, server immediately responds with pong.</p>
+                <p><strong>Echo:</strong> Server receives your text and sends back the reversed version.</p>
+                <p><strong>Server Broadcast:</strong> Server sends heartbeat messages every 30 seconds to all clients.</p>
+                <p><strong>Notifications:</strong> Server notifies all clients when someone joins or leaves.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let clientId = null;
+
+        function connect() {
+            // Connect to WebSocket server
+            ws = new WebSocket('ws://localhost:4000');
+
+            ws.onopen = function() {
+                updateStatus(true);
+                addMessage('system', 'Connected to WebSocket server');
+            };
+
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                handleServerMessage(data);
+            };
+
+            ws.onclose = function() {
+                updateStatus(false);
+                addMessage('system', 'Disconnected from server');
+                ws = null;
+            };
+
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+                addMessage('error', 'WebSocket error occurred');
+            };
+        }
+
+        function disconnect() {
+            if (ws) {
+                ws.close();
+            }
+        }
+
+        function updateStatus(connected) {
+            const statusEl = document.getElementById('status');
+            const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+
+            if (connected) {
+                statusEl.textContent = clientId ? `Connected (Client #${clientId})` : 'Connected';
+                statusEl.className = 'status connected';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+            } else {
+                statusEl.textContent = 'Disconnected';
+                statusEl.className = 'status disconnected';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+                clientId = null;
+            }
+        }
+
+        function handleServerMessage(data) {
+            switch (data.type) {
+                case 'welcome':
+                    clientId = data.clientId;
+                    updateStatus(true);
+                    addMessage('welcome', data.message, data.timestamp);
+                    break;
+
+                case 'chat':
+                    const prefix = data.clientId === clientId ? '(You)' : `Client #${data.clientId}`;
+                    addMessage('chat', `${prefix}: ${data.message}`, data.timestamp);
+                    break;
+
+                case 'notification':
+                    addMessage('notification', data.message, data.timestamp);
+                    break;
+
+                case 'pong':
+                    addMessage('pong', `${data.message} (Server time: ${data.serverTime})`, data.serverTime);
+                    break;
+
+                case 'echo':
+                    addMessage('echo', `Original: "${data.original}" | Reversed: "${data.echoed}"`, data.timestamp);
+                    break;
+
+                case 'server-broadcast':
+                    addMessage('server', `${data.message} - ${data.connectedClients} client(s) connected`, data.timestamp);
+                    break;
+
+                case 'error':
+                    addMessage('error', data.message);
+                    break;
+
+                default:
+                    console.log('Unknown message type:', data);
+            }
+        }
+
+        function addMessage(type, content, timestamp) {
+            const messagesDiv = document.getElementById('messages');
+            const messageEl = document.createElement('div');
+            messageEl.className = `message message-${type}`;
+
+            let html = content;
+            if (timestamp) {
+                const time = new Date(timestamp).toLocaleTimeString();
+                html += `<div class="timestamp">${time}</div>`;
+            }
+
+            messageEl.innerHTML = html;
+            messagesDiv.appendChild(messageEl);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function sendChat() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addMessage('error', 'Not connected to server');
+                return;
+            }
+
+            ws.send(JSON.stringify({
+                type: 'chat',
+                content: message
+            }));
+
+            input.value = '';
+        }
+
+        function sendPing() {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addMessage('error', 'Not connected to server');
+                return;
+            }
+
+            ws.send(JSON.stringify({ type: 'ping' }));
+            addMessage('system', 'Ping sent...');
+        }
+
+        function sendEcho() {
+            const input = document.getElementById('echoInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addMessage('error', 'Not connected to server');
+                return;
+            }
+
+            ws.send(JSON.stringify({
+                type: 'echo',
+                content: message
+            }));
+
+            input.value = '';
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendChat();
+            }
+        }
+
+        function handleEchoKeypress(event) {
+            if (event.key === 'Enter') {
+                sendEcho();
+            }
+        }
+
+        function clearMessages() {
+            document.getElementById('messages').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

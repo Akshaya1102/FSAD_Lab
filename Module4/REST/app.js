@@ -1,18 +1,18 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const mongoose = require("mongoose");
-var bodyParser = require('body-parser');
-const productRoutes = require("./api/routes/products");
-const orderRoutes = require("./api/routes/orders");
+import mongoose from "mongoose";
+import bodyParser from 'body-parser';
+import productRoutes from "./api/routes/products.js";
+import orderRoutes from "./api/routes/orders.js";
 
-const swaggerUi = require('swagger-ui-express');
-const yaml = require('yamljs');
-const dbConfig = require('./db.config.js');
-const authRoutes = require("./api/routes/auth");
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import { url } from './db.config.js';
+import authRoutes from "./api/routes/auth.js";
 
  //Connecting to the database
- mongoose.connect(dbConfig.url).then(() => {
-    console.log("Successfully connected to the database");    
+ mongoose.connect(url).then(() => {
+    console.log("Successfully connected to the database");
 }).catch(err => {
     console.log('Could not connect to the database.', err);
     process.exit();
@@ -53,15 +53,13 @@ app.get("/", (req, res, next) => {
 });
 });
 
-const swaggerDocument = yaml.load('docs/products.yaml');
+const swaggerDocument = YAML.load('docs/products.yaml');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use((req, res, next) => {
   const error = new Error("Not found");
   error.status = 404;
   next(error);
 });
-
-
 
 
 app.use((error, req, res, next) => {
@@ -74,5 +72,4 @@ app.use((error, req, res, next) => {
 });
 
 
-
-module.exports = app;
+export default app;

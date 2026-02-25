@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const mongoose = require("mongoose");
+import { Router } from "express";
+const router = Router();
+import { Types } from "mongoose";
 
-const Order = require("../models/order");
-const Product = require("../models/product");
+import Order from "../models/order.js";
+import Product from "../models/product.js";
 
 /* Handle incoming GET requests to /orders*/
 router.get("/", (req, res, next) => {
@@ -90,7 +90,7 @@ router.post("/", (req, res, next) => {
         });
       }
       const order = new Order({
-        _id: new mongoose.Types.ObjectId(),
+        _id: new Types.ObjectId(),
         quantity: req.body.quantity,
         product: req.body.productId
       });
@@ -167,4 +167,4 @@ router.delete("/:orderId", (req, res, next) => {
     });
 });
 
-module.exports = router;
+export default router;

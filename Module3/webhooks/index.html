@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mario's Pizza Kitchen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .status-bar {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .order-count {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4f46e5;
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            animation: slideIn 0.5s ease-out;
+            transition: transform 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .order-card.new {
+            animation: highlight 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes highlight {
+            0% { box-shadow: 0 0 0 4px #fbbf24; }
+            100% { box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #e5e7eb;
+        }
+
+        .order-id {
+            background: #4f46e5;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .order-time {
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+
+        .customer-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .pizza-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            color: #4b5563;
+            margin-bottom: 10px;
+        }
+
+        .pizza-icon {
+            font-size: 1.5rem;
+        }
+
+        .extras {
+            margin: 10px 0;
+        }
+
+        .extras-title {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+
+        .extras-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .extra-item {
+            background: #f3f4f6;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #4b5563;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .amount {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        .status-badge {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            opacity: 0.8;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: slideInRight 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍕 Mario's Pizza Kitchen</h1>
+            <p>Real-time order display powered by Webhooks</p>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Listening for payment webhooks...</span>
+            </div>
+            <div class="order-count">Orders: <span id="orderCount">0</span></div>
+        </div>
+
+        <div id="ordersContainer" class="orders-grid">
+            <div class="empty-state" id="emptyState">
+                <div class="icon">📭</div>
+                <h2>No orders yet</h2>
+                <p>Orders will appear here automatically when customers pay</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ordersContainer = document.getElementById('ordersContainer');
+        const orderCountEl = document.getElementById('orderCount');
+        const emptyState = document.getElementById('emptyState');
+        let orderCount = 0;
+
+        // Connect to Server-Sent Events for real-time updates
+        const eventSource = new EventSource('/events');
+
+        eventSource.onmessage = function(event) {
+            const order = JSON.parse(event.data);
+            addOrderCard(order);
+            showNotification(order);
+        };
+
+        eventSource.onerror = function() {
+            console.log('SSE connection error. Reconnecting...');
+        };
+
+        function addOrderCard(order) {
+            // Remove empty state if present
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            orderCount++;
+            orderCountEl.textContent = orderCount;
+
+            const card = document.createElement('div');
+            card.className = 'order-card new';
+
+            const extrasHTML = order.extras && order.extras.length > 0
+                ? `<div class="extras">
+                        <div class="extras-title">Extras:</div>
+                        <div class="extras-list">
+                            ${order.extras.map(e => `<span class="extra-item">+ ${e}</span>`).join('')}
+                        </div>
+                   </div>`
+                : '';
+
+            card.innerHTML = `
+                <div class="order-header">
+                    <span class="order-id">${order.order_id}</span>
+                    <span class="order-time">${new Date().toLocaleTimeString()}</span>
+                </div>
+                <div class="customer-name">${order.customer}</div>
+                <div class="pizza-name">
+                    <span class="pizza-icon">🍕</span>
+                    <span>${order.pizza}</span>
+                </div>
+                ${extrasHTML}
+                <div class="order-footer">
+                    <span class="amount">$${order.amount.toFixed(2)}</span>
+                    <span class="status-badge">✓ PAID</span>
+                </div>
+            `;
+
+            ordersContainer.insertBefore(card, ordersContainer.firstChild);
+
+            // Remove 'new' class after animation
+            setTimeout(() => card.classList.remove('new'), 1000);
+        }
+
+        function showNotification(order) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `🔔 New order from ${order.customer}!`;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

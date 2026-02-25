@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
-const User = require("../models/user");
+import { Router } from "express";
+const router = Router();
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { Types } from "mongoose";
+import User from "../models/user.js";
 
 router.post("/signup", (req, res) => {
     bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -11,7 +11,7 @@ router.post("/signup", (req, res) => {
             return res.status(500).json({ error: err });
         }
         const user = new User({
-            _id: new mongoose.Types.ObjectId(),
+            _id: new Types.ObjectId(),
             username: req.body.username,
             password: hash
         });
@@ -41,4 +41,4 @@ router.post("/login", (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

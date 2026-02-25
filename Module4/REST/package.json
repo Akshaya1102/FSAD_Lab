@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "Node.js is one of the most popular server-side frameworks.\r Express is a web application framework for Node.js \r Let create a simple http server!!",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/**/*.test.js",
     "start": "nodemon server.js"
   },
   "author": "",
@@ -21,5 +22,11 @@
     "nodemon": "^3.1.0",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "chai": "^6.2.2",
+    "chai-http": "^5.1.2",
+    "mocha": "^11.7.5",
+    "supertest": "^7.2.2"
   }
 }

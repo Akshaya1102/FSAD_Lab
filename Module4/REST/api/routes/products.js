@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
-const mongoose = require("mongoose");
-const checkAuth = require("../middleware/check-auth");
-const Product = require("../models/product");
+import { Router } from "express";
+const router = Router();
+import { Types } from "mongoose";
+import checkAuth from "../middleware/check-auth.js";
+import Product from "../models/product.js";
 
 router.get("/", async (req, res, next) => {
   await Product.find()
@@ -35,7 +35,7 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", checkAuth, (req, res, next) => {
   const product = new Product({
-    _id: new mongoose.Types.ObjectId(),
+    _id: new Types.ObjectId(),
     name: req.body.name,
     price: req.body.price
   });
@@ -136,5 +136,5 @@ router.delete("/:productId", (req, res, next) => {
     });
 });
 
-module.exports = router;
+export default router;
 

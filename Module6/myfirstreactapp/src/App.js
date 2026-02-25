@@ -4,17 +4,15 @@ import ToggleButton from './components/Toggle';
 import Welcome from './components/Welcome';
 import Counter from './components/Counter';
 import FindUser from './components/FindUser';
+import ProductList from './components/ProductList';
 function App() {
     let isLogged=true;
     return (
-      <div className="App">
-      {isLogged && <ToggleButton />}
-      <Welcome age='34'/>
-      <Welcome name="joe" age='35'/>
-      <Counter />      
-      <FindUser />
-  
-    </div>
+     
+    <div>
+        <h1>Product Listing</h1>
+        <ProductList />
+      </div>
         
     
   );
